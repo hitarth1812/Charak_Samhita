@@ -1,0 +1,24 @@
+# ── Secrets ───────────────────────────────────────────────
+.env
+charaka_vaidya/.env
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# ── ChromaDB / Data ──────────────────────────────────────
+charaka_vaidya/data/chroma_db/
+*.sqlite3
+
+# ── Logs / OS ─────────────────────────────────────────────
+*.log
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────
+.vscode/
+.idea/

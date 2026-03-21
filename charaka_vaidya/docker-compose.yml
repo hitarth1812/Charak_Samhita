@@ -1,0 +1,12 @@
+services:
+  charaka-vaidya:
+    build: .
+    container_name: charaka-vaidya
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"   # FastAPI
+      - "8501:8501"   # Streamlit
+    volumes:
+      - ./data:/app/data   # Persist PDF + ChromaDB across rebuilds
+    restart: unless-stopped

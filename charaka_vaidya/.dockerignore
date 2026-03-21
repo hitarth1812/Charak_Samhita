@@ -1,0 +1,31 @@
+# ── Secrets ─────────────────────
+.env
+
+# ── Python / venv ──────────────
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+
+# ── Data (mounted as volume) ──
+data/chroma_db/
+*.sqlite3
+
+# ── Git ────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ── IDE / OS ───────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ── Logs ───────────────────────
+*.log
+
+# ── Docker (prevent recursion) ─
+docker-compose.yml
