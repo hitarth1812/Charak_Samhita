@@ -32,7 +32,6 @@ def build_vector_store(chunks: list) -> Chroma:
         persist_directory=config.CHROMA_PERSIST_DIR,
         collection_name=config.COLLECTION_NAME,
     )
-    store.persist()
     logger.info(f"Vector store saved to {config.CHROMA_PERSIST_DIR}")
     return store
 
