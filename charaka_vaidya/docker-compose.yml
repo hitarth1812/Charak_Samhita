@@ -9,5 +9,8 @@ services:
       - "8000:8000"   # FastAPI
       - "8501:8501"   # Streamlit
     volumes:
-      - ./data:/app/data   # Persist PDF + ChromaDB across rebuilds
+      - charaka_data:/app/data   # Persist PDF + ChromaDB across rebuilds
     restart: unless-stopped
+
+volumes:
+  charaka_data:
