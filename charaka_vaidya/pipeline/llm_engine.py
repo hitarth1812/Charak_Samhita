@@ -10,9 +10,11 @@ _client = None
 def get_client() -> Groq:
     global _client
     if _client is None:
-        if not config.GROQ_API_KEY:
+        import os
+        key = os.getenv("GROQ_API_KEY") or config.GROQ_API_KEY
+        if not key:
             raise ValueError("GROQ_API_KEY is not set. Please add it to your .env file.")
-        _client = Groq(api_key=config.GROQ_API_KEY)
+        _client = Groq(api_key=key)
     return _client
 
 def generate_response(

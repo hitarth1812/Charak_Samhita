@@ -61,7 +61,7 @@ def _direct_pipeline(query: str, history: list) -> dict:
         return {"answer": f"⚠️ **Error:** {e}", "intent": "error",
                 "sources": [], "has_disclaimer": False, "is_emergency": False}
     except Exception as e:
-        return {"answer": f"⚠️ **Error:** {e}\n\nCheck your Groq API key in the sidebar.",
+        return {"answer": f"⚠️ **Error:** {e}",
                 "intent": "error", "sources": [], "has_disclaimer": False, "is_emergency": False}
 
 def init_chat_state():
