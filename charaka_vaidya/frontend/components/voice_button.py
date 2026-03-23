@@ -4,6 +4,7 @@ GROQ_API_KEY stays server-side; the browser only sends audio bytes.
 """
 import streamlit as st
 import os
+import hashlib
 import requests
 from charaka_vaidya.core.i18n import t, get_lang, get_bcp47
 from charaka_vaidya.utils.logger import get_logger
@@ -63,6 +64,14 @@ def render_voice_input(key: str = "voice_main") -> str | None:
 
     if audio is not None:
         audio_bytes = audio.read()
+        audio_hash = hashlib.sha1(audio_bytes).hexdigest()
+        hash_key = f"voice_last_hash_{key}"
+
+        # Avoid reprocessing the same audio blob after Streamlit reruns.
+        if st.session_state.get(hash_key) == audio_hash:
+            return None
+        st.session_state[hash_key] = audio_hash
+
         logger.info(f"🎙️ Audio recorded: {len(audio_bytes)} bytes")
         
         with st.spinner(t("voice_transcribing")):
@@ -81,6 +90,10 @@ def render_voice_input(key: str = "voice_main") -> str | None:
             logger.info(f"✅ Transcription successful")
             logger.info(f"   Detected language (raw): {detected}")
             logger.info(f"   Text: {text[:100]}")
+
+            # Persist detected language for downstream consultation response.
+            st.session_state["consult_lang_code"] = detected.lower().strip()
+            st.session_state["consult_lang_name"] = lang_name
             
             st.success(f"🎙️ *{t('voice_detected_lang')}: {detected.upper()}*")
             st.info(f"**Transcribed:** {text}")
@@ -113,7 +126,6 @@ def render_voice_input(key: str = "voice_main") -> str | None:
                     if not st.session_state.get("lang_pinned", False):
                         logger.info(f"   🔄 Switching language: {current_lang} → {mapped_ui_lang}")
                         st.session_state["lang"] = mapped_ui_lang
-                        st.rerun()
                     else:
                         logger.info(f"   ⏸️ Language pinned, not switching")
                 else:

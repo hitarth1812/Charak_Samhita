@@ -55,15 +55,16 @@ with st.expander(f"🎙️ {t('voice_start')} (Groq Whisper)", expanded=False):
     voice_text = render_voice_input(key="chat_voice")
     if voice_text:
         st.session_state["pending_voice"] = voice_text
-        st.rerun()
 
 # ── Text Input (prefilled from voice if available) ───────────────────────────
 pending = st.session_state.pop("pending_voice", None)
+voice_origin = False
 user_input = st.chat_input(
     placeholder=t("chat_placeholder"),
 )
 if pending and not user_input:
     user_input = pending
+    voice_origin = True
 
 # ── Quick Prompts ─────────────────────────────────────────────────────────────
 if not st.session_state["messages"]:
@@ -95,6 +96,16 @@ if pending_query and not user_input:
 # ── Process Query ─────────────────────────────────────────────────────────────
 if user_input:
     import time
+
+    # If query is from voice transcription, prefer detected transcription language.
+    # Otherwise fall back to current UI language for consultation language.
+    ui_lang_name = {
+        "en": "English",
+        "hi": "Hindi",
+        "gu": "Gujarati",
+    }.get(st.session_state.get("lang", "en"), "English")
+    response_language = st.session_state.get("consult_lang_name") if voice_origin else ui_lang_name
+
     st.session_state["messages"].append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.markdown(user_input)
@@ -120,6 +131,7 @@ if user_input:
                         user_query=user_input,
                         context=context,
                         intent=intent,
+                        response_language=response_language,
                         stream=False,
                     )
                     # format_response returns a dict; extract the text

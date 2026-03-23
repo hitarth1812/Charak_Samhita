@@ -22,10 +22,15 @@ def generate_response(
     context: str,
     chat_history: list = None,
     intent: str = "general",
+    response_language: str = None,
     stream: bool = False,
 ) -> str:
     client  = get_client()
     history = chat_history or []
+
+    lang_directive = ""
+    if response_language:
+        lang_directive = f"\n\nIMPORTANT: Write the full response in {response_language}. Keep citations and structure in that language."
 
     user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
 {context}
@@ -37,7 +42,7 @@ Respond using the 4-layer system:
 Layer 1 — What does Charaka Samhita say? (cite Sthana + Adhyaya)
 Layer 2 — Translate into plain, accessible language
 Layer 3 — What does modern science add?
-Layer 4 — Practical, actionable guidance"""
+Layer 4 — Practical, actionable guidance{lang_directive}"""
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for msg in history[-6:]:
